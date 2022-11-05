@@ -27,9 +27,22 @@ const userSchema = mongoose.Schema({
     require: true,
     min: 8,
   },
+  recoveryEmail: {
+    type: String,
+    require: true,
+  },
   profilePic: {
     type: String,
     default: "",
+  },
+  coverPic: {
+    type: String,
+    default: "",
+  },
+  bio: {
+    type: String,
+    default: "",
+    max: 160,
   },
   likedPosts: {
     type: Array,
@@ -39,9 +52,9 @@ const userSchema = mongoose.Schema({
     type: Array,
     default: [],
   },
-  recoveryEmail: {
-    type: String,
-    require: true,
+  createdAt: {
+    type: Date,
+    default: Date.now(),
   },
 });
 
