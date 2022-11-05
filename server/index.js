@@ -1,9 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const createError = require("http-errors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const cors = require("cors");
 const dotenv = require("dotenv");
+
+const AuthRoute = require("./routes/Auth.route");
 
 dotenv.config();
 
@@ -23,6 +26,22 @@ app.use(
     exposedHeaders: "Authorization",
   })
 );
+
+app.use("/auth", AuthRoute);
+
+app.use(async (req, res, next) => {
+  next(createError.NotFound());
+});
+
+app.use(async (err, req, res, next) => {
+  res.status(err.status || 500).json({
+    error: {
+      success: false,
+      status: err.status || 500,
+      message: err.message,
+    },
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
