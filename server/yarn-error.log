@@ -1,0 +1,34 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarn add mongoose express helmet morgan cors dotenv
+
+PATH: 
+  /home/shahab/.cargo/bin:/usr/local/bin:/usr/bin:/var/lib/snapd/snap/bin:/usr/local/sbin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/usr/lib/jvm/default/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.9.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/bson/-/bson-4.7.0.tgz: ETIMEDOUT
+      at Timeout._onTimeout (/usr/lib/node_modules/yarn/lib/cli.js:141550:19)
+      at listOnTimeout (node:internal/timers:564:17)
+      at process.processTimers (node:internal/timers:507:7)
+
+npm manifest: 
+  {
+    "name": "server",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
