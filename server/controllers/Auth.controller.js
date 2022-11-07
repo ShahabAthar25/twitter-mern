@@ -2,6 +2,7 @@ const createError = require("http-errors");
 
 const User = require("../models/User");
 const { userSchema } = require("../helpers/ValidationSchema");
+const { signAccessToken } = require("../helpers/JWTHelper");
 
 const register = async (req, res, next) => {
   try {
@@ -15,11 +16,12 @@ const register = async (req, res, next) => {
     if (usernameExist)
       throw createError.Conflict(`Username ${result.username} already exists`);
 
-    const user = new User(result);
+    const newUser = new User(result);
+    const user = await newUser.save();
 
-    await user.save();
+    const accessToken = await signAccessToken(user.id);
 
-    res.json("User succesfully created");
+    res.json({ accessToken });
   } catch (error) {
     if (error.isJoi) error.status = 422;
     next(error);
