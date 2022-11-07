@@ -38,7 +38,10 @@ module.exports = {
 
     JWT.verify(token, process.env.SECRET_KEY, (err, payload) => {
       if (err) {
-        return next(createError.Unauthorized());
+        const message =
+          err.name === "JsonWebTokenError" ? "Unauthorized" : err.message;
+
+        return next(createError.Unauthorized(message));
       }
 
       req.payload = payload;
