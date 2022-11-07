@@ -8,6 +8,12 @@ const userSchema = Joi.object({
   recoveryEmail: Joi.string().required().max(255),
 });
 
+const loginSchema = Joi.object({
+  email: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
 module.exports = {
   userSchema,
+  loginSchema,
 };

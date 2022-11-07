@@ -1,7 +1,7 @@
 const createError = require("http-errors");
 
 const User = require("../models/User");
-const { userSchema } = require("../helpers/ValidationSchema");
+const { userSchema, loginSchema } = require("../helpers/ValidationSchema");
 const { signAccessToken } = require("../helpers/JWTHelper");
 
 const register = async (req, res, next) => {
@@ -28,8 +28,23 @@ const register = async (req, res, next) => {
   }
 };
 
-const login = async (req, res) => {
-  res.json("Hello World");
+const login = async (req, res, next) => {
+  try {
+    const result = await loginSchema.validateAsync(req.body);
+    const user = await User.findOne({ email: result.email });
+    if (!user) throw createError.NotFound("Invalid Email/Password.");
+
+    const isMatch = await user.isValidPassword(result.password);
+    if (!isMatch) throw createError.Unauthorized("Invalid Email/Password.");
+
+    const accessToken = await signAccessToken(user.id);
+
+    res.json({ accessToken });
+  } catch (error) {
+    if (error.isJoi)
+      return next(createError.BadRequest("Invalid Email/Password."));
+    next(error);
+  }
 };
 
 const logout = async (req, res) => {

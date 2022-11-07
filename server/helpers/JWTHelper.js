@@ -22,9 +22,27 @@ module.exports = {
       };
 
       JWT.sign(payload, process.env.SECRET_KEY, options, (err, token) => {
-        if (err) reject(err);
+        if (err) {
+          console.log(err);
+          reject(createError.InternalServerError());
+        }
         resolve(token);
       });
+    });
+  },
+  verifyAccessToken: (req, res, next) => {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) return next(createError.Unauthorized());
+
+    const token = authHeader.split(" ")[1];
+
+    JWT.verify(token, process.env.SECRET_KEY, (err, payload) => {
+      if (err) {
+        return next(createError.Unauthorized());
+      }
+
+      req.payload = payload;
+      next();
     });
   },
 };
