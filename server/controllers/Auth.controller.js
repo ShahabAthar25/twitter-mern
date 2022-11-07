@@ -1,32 +1,27 @@
 const createError = require("http-errors");
 
 const User = require("../models/User");
+const { userSchema } = require("../helpers/ValidationSchema");
 
 const register = async (req, res, next) => {
   try {
-    const { name, username, email, password, recoveryEmail } = req.body;
-    if (!name || !username || !email || !password || !recoveryEmail)
-      throw createError.BadRequest();
+    const result = await userSchema.validateAsync(req.body);
 
-    const emailExist = await User.findOne({ email: email });
-    if (emailExist) throw createError.Conflict(`Email ${email} already exists`);
+    const emailExist = await User.findOne({ email: result.email });
+    if (emailExist)
+      throw createError.Conflict(`Email ${result.email} already exists`);
 
-    const usernameExist = await User.findOne({ username: username });
+    const usernameExist = await User.findOne({ username: result.username });
     if (usernameExist)
-      throw createError.Conflict(`Username ${username} already exists`);
+      throw createError.Conflict(`Username ${result.username} already exists`);
 
-    const user = new User({
-      name,
-      username,
-      email,
-      password,
-      recoveryEmail,
-    });
+    const user = new User(result);
 
     await user.save();
 
     res.json("User succesfully created");
   } catch (error) {
+    if (error.isJoi) error.status = 422;
     next(error);
   }
 };

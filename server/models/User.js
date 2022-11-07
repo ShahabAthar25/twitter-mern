@@ -1,26 +1,24 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const userSchema = mongoose.Schema({
   name: {
     type: String,
     require: true,
-    min: 3,
-    max: 60,
+    max: 255,
   },
   username: {
     type: String,
     require: true,
     unique: true,
-    min: 3,
-    max: 60,
+    max: 255,
   },
   email: {
     type: String,
     require: true,
     lowercase: true,
     unique: true,
-    min: 3,
-    max: 100,
+    max: 255,
   },
   password: {
     type: String,
@@ -30,6 +28,7 @@ const userSchema = mongoose.Schema({
   recoveryEmail: {
     type: String,
     require: true,
+    lowercase: true,
   },
   profilePic: {
     type: String,
@@ -56,6 +55,18 @@ const userSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+});
+
+userSchema.pre("save", async function (next) {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+
+    this.password = hashedPassword;
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);
