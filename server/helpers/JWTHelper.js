@@ -23,7 +23,7 @@ module.exports = {
 
       JWT.sign(payload, process.env.SECRET_KEY, options, (err, token) => {
         if (err) {
-          console.log(err);
+          console.log(err.message);
           reject(createError.InternalServerError());
         }
         resolve(token);
@@ -46,6 +46,24 @@ module.exports = {
 
       req.payload = payload;
       next();
+    });
+  },
+  signRefreshToken: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      const payload = {};
+      const options = {
+        expiresIn: "1y",
+        issuer: "https://github.com/ShahabAthar25",
+        audience: userId,
+      };
+
+      JWT.sign(payload, process.env.PUBLIC_KEY, options, (err, token) => {
+        if (err) {
+          console.log(err.message);
+          reject(createError.InternalServerError());
+        }
+        resolve(token);
+      });
     });
   },
 };
