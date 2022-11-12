@@ -25,6 +25,10 @@ const postSchema = mongoose.Schema({
     type: Array,
     default: [],
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 postSchema.pre("save", function (next, req) {

@@ -7,7 +7,7 @@ module.exports = {
     try {
       const posts = await Post.find();
 
-      res.json(posts);
+      res.json(posts.reverse());
     } catch (error) {
       next(error);
     }
@@ -37,7 +37,26 @@ module.exports = {
   },
   updatePost: async (req, res, next) => {
     try {
-      res.send("Hello, World!");
+      const { id } = req.params;
+
+      const result = await postSchema.validateAsync(req.body);
+      if (!result.body && !result.retweet) throw createError.BadRequest();
+
+      const post = await Post.findById(id);
+
+      const now = new Date();
+      const thirtyMinutesAgo = new Date(now - 30 * 60000);
+
+      if (post.createdAt < thirtyMinutesAgo)
+        throw createError.Forbidden("Caanot update post after 30 minutes");
+
+      if (req.payload.id != post.ownerId) throw createError.Forbidden();
+
+      await post.updateOne({
+        $set: result,
+      });
+
+      res.json("Post Updated");
     } catch (error) {
       next(error);
     }
