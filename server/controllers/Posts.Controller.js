@@ -1,33 +1,37 @@
+const Post = require("../models/Post");
+
 module.exports = {
-  getAllPosts: (req, res, next) => {
+  getAllPosts: async (req, res, next) => {
+    try {
+      const posts = await Post.find();
+
+      res.json(posts);
+    } catch (error) {
+      next(error);
+    }
+  },
+  getPost: async (req, res, next) => {
     try {
       res.send("Hello, World!");
     } catch (error) {
       next(error);
     }
   },
-  getPost: (req, res, next) => {
+  createPost: async (req, res, next) => {
     try {
       res.send("Hello, World!");
     } catch (error) {
       next(error);
     }
   },
-  createPost: (req, res, next) => {
+  updatePost: async (req, res, next) => {
     try {
       res.send("Hello, World!");
     } catch (error) {
       next(error);
     }
   },
-  updatePost: (req, res, next) => {
-    try {
-      res.send("Hello, World!");
-    } catch (error) {
-      next(error);
-    }
-  },
-  deletePost: (req, res, next) => {
+  deletePost: async (req, res, next) => {
     try {
       res.send("Hello, World!");
     } catch (error) {

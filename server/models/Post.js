@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
+const postSchema = mongoose.Schema({
   ownerId: {
     type: String,
     default: "",
@@ -27,9 +27,9 @@ const userSchema = mongoose.Schema({
   },
 });
 
-userSchema.pre("save", function (next) {
+postSchema.pre("save", function (next) {
   this.ownerId = req.payload.id;
   next();
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Post", postSchema);
