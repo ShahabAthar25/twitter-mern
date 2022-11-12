@@ -5,9 +5,9 @@ const { postSchema } = require("../helpers/ValidationSchema");
 module.exports = {
   getAllPosts: async (req, res, next) => {
     try {
-      const posts = await Post.find();
+      const posts = await Post.find().sort({ createdAt: -1 });
 
-      res.json(posts.reverse());
+      res.json(posts);
     } catch (error) {
       next(error);
     }
@@ -63,7 +63,27 @@ module.exports = {
   },
   deletePost: async (req, res, next) => {
     try {
-      res.send("Hello, World!");
+      const { id } = req.params;
+      const post = await Post.findById(id);
+
+      if (req.payload.id != post.ownerId) throw createError.Forbidden();
+
+      await post.deleteOne();
+
+      res.json("Post deleted");
+    } catch (error) {
+      next(error);
+    }
+  },
+  searchPosts: async (req, res, next) => {
+    try {
+      const { q } = req.query;
+
+      const posts = await Post.find({
+        body: { $regex: new RegExp(q + ".*", "i") },
+      });
+
+      res.json(posts);
     } catch (error) {
       next(error);
     }

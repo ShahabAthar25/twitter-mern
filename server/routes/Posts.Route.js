@@ -4,6 +4,7 @@ const controller = require("../controllers/Posts.Controller");
 const { verifyAccessToken } = require("../helpers/JWTHelper");
 
 router.get("/", controller.getAllPosts);
+router.get("/search", controller.searchPosts);
 router.get("/:id", controller.getPost);
 router.post("/", verifyAccessToken, controller.createPost);
 router.put("/:id", verifyAccessToken, controller.updatePost);
