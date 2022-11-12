@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 
 const AuthRoute = require("./routes/Auth.Route");
 const PostsRoute = require("./routes/Posts.Route");
+const UsersRoute = require("./routes/Users.Route");
 const { verifyAccessToken } = require("./helpers/JWTHelper");
 require("./helpers/MongoDB");
 require("./helpers/Redis");
@@ -24,6 +25,7 @@ app.use(cors());
 
 app.use("/auth", AuthRoute);
 app.use("/posts", PostsRoute);
+app.use("/users", UsersRoute);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());
