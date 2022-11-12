@@ -5,7 +5,8 @@ const helmet = require("helmet");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
-const AuthRoute = require("./routes/Auth.route");
+const AuthRoute = require("./routes/Auth.Route");
+const PostsRoute = require("./routes/Posts.Route");
 require("./helpers/MongoDB");
 require("./helpers/Redis");
 
@@ -21,6 +22,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use("/auth", AuthRoute);
+app.use("/posts", PostsRoute);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());
