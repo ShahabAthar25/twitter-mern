@@ -15,6 +15,7 @@ module.exports = {
         id: user._id,
         name: user.name,
         username: user.username,
+        coverPic: user.coverPic,
       };
       const options = {
         expiresIn: "1h",
