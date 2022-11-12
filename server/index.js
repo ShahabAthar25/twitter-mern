@@ -6,7 +6,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 
 const AuthRoute = require("./routes/Auth.route");
-require("./helpers/database");
+require("./helpers/MongoDB");
+require("./helpers/Redis");
 
 dotenv.config();
 

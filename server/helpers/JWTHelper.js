@@ -3,6 +3,7 @@ const createError = require("http-errors");
 const dotenv = require("dotenv");
 
 const User = require("../models/User");
+const client = require("../helpers/Redis");
 
 dotenv.config();
 
@@ -62,7 +63,37 @@ module.exports = {
           console.log(err.message);
           reject(createError.InternalServerError());
         }
-        resolve(token);
+
+        client
+          .HSET("refreshTokens", userId, token)
+          .then(() => {
+            resolve(token);
+          })
+          .catch((err) => {
+            console.log(err.message);
+            reject(createError.InternalServerError());
+          });
+      });
+    });
+  },
+  verifyRefreshToken: (refreshToken) => {
+    return new Promise((resolve, reject) => {
+      JWT.verify(refreshToken, process.env.PUBLIC_KEY, (err, payload) => {
+        if (err) return reject(createError.Unauthorized());
+        const userId = payload.aud;
+
+        client
+          .HGET("refreshTokens", userId)
+          .then((result) => {
+            if (refreshToken === result) return resolve(userId);
+            reject(createError.Unauthorized());
+          })
+          .catch((err) => {
+            console.log(err.message);
+            reject(createError.InternalServerError());
+          });
+
+        resolve(userId);
       });
     });
   },
