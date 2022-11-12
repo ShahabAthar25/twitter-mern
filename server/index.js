@@ -29,10 +29,17 @@ app.use(async (req, res, next) => {
 });
 
 app.use(async (err, req, res, next) => {
-  res.status(err.status || 500).json({
+  if (err.name === "CastError") {
+    err.status = 404;
+    err.message = "Not Found";
+  } else if (!err.status) {
+    err.status = 500;
+    console.log(err.message);
+  }
+  res.status(err.status).json({
     error: {
-      status: err.status || 500,
-      message: "Internal Server Error",
+      status: err.status,
+      message: err.status === 500 ? "Internal Server Error" : err.message,
     },
   });
 });

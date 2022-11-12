@@ -1,3 +1,4 @@
+const createError = require("http-errors");
 const Post = require("../models/Post");
 
 module.exports = {
@@ -12,7 +13,10 @@ module.exports = {
   },
   getPost: async (req, res, next) => {
     try {
-      res.send("Hello, World!");
+      const { id } = req.params;
+      const post = await Post.findById(id);
+
+      res.json(post);
     } catch (error) {
       next(error);
     }
