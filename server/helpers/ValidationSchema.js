@@ -1,5 +1,7 @@
 const Joi = require("@hapi/joi");
 
+// Auth
+
 const userSchema = Joi.object({
   name: Joi.string().required().max(255),
   username: Joi.string().required().max(255),
@@ -13,7 +15,15 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
+// Posts
+
+const postSchema = Joi.object({
+  body: Joi.string(),
+  retweet: Joi.string(),
+});
+
 module.exports = {
   userSchema,
   loginSchema,
+  postSchema,
 };

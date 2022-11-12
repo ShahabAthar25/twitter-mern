@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 
 const AuthRoute = require("./routes/Auth.Route");
 const PostsRoute = require("./routes/Posts.Route");
+const { verifyAccessToken } = require("./helpers/JWTHelper");
 require("./helpers/MongoDB");
 require("./helpers/Redis");
 
@@ -34,7 +35,7 @@ app.use(async (err, req, res, next) => {
     err.message = "Not Found";
   } else if (!err.status) {
     err.status = 500;
-    console.log(err.message);
+    console.log(err);
   }
   res.status(err.status).json({
     error: {

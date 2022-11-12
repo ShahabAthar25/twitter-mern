@@ -27,7 +27,7 @@ const postSchema = mongoose.Schema({
   },
 });
 
-postSchema.pre("save", function (next) {
+postSchema.pre("save", function (next, req) {
   this.ownerId = req.payload.id;
   next();
 });

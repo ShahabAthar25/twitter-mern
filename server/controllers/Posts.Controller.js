@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const Post = require("../models/Post");
+const { postSchema } = require("../helpers/ValidationSchema");
 
 module.exports = {
   getAllPosts: async (req, res, next) => {
@@ -23,7 +24,13 @@ module.exports = {
   },
   createPost: async (req, res, next) => {
     try {
-      res.send("Hello, World!");
+      const result = await postSchema.validateAsync(req.body);
+      if (!result.body && !result.retweet) throw createError.BadRequest();
+
+      const newPost = new Post(result);
+      const post = await newPost.save(req);
+
+      res.json(post);
     } catch (error) {
       next(error);
     }
