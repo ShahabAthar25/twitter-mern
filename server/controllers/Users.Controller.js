@@ -1,7 +1,12 @@
+const User = require("../models/User");
+
 module.exports = {
   getUser: async (req, res, next) => {
     try {
-      res.json("Hello World");
+      const { id } = req.params;
+      const user = await User.findById(id);
+
+      res.json(user);
     } catch (error) {
       next(error);
     }
