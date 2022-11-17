@@ -1,11 +1,27 @@
 const createError = require("http-errors");
 const Post = require("../models/Post");
 const { postSchema } = require("../helpers/ValidationSchema");
+const User = require("../models/User");
+
+const setOwner = async (post) => {
+  const user = await User.findById(post.owner);
+  post.owner = {};
+  post.owner.name = user.name;
+  post.owner.username = user.username;
+  post.owner.coverPic = user.coverPic;
+};
 
 module.exports = {
   getAllPosts: async (req, res, next) => {
     try {
-      const posts = await Post.find().sort({ createdAt: -1 });
+      const posts = JSON.parse(
+        JSON.stringify(await Post.find().sort({ createdAt: -1 }))
+      );
+      if (!posts) throw createError.NotFound();
+
+      for (const post of posts) {
+        await setOwner(post);
+      }
 
       res.json(posts);
     } catch (error) {
@@ -15,7 +31,10 @@ module.exports = {
   getPost: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const post = await Post.findById(id);
+      const post = JSON.parse(JSON.stringify(await Post.findById(id)));
+      if (!post) throw createError.NotFound();
+
+      await setOwner(post);
 
       res.json(post);
     } catch (error) {
@@ -65,8 +84,9 @@ module.exports = {
     try {
       const { id } = req.params;
       const post = await Post.findById(id);
+      if (!post) throw createError.NotFound();
 
-      if (req.payload.id != post.ownerId) throw createError.Forbidden();
+      // if (req.payload.id != post.ownerId) throw createError.Forbidden();
 
       await post.deleteOne();
 
@@ -79,9 +99,17 @@ module.exports = {
     try {
       const { q } = req.query;
 
-      const posts = await Post.find({
-        body: { $regex: new RegExp(q + ".*", "i") },
-      });
+      const posts = JSON.parse(
+        JSON.stringify(
+          await Post.find({
+            body: { $regex: new RegExp(q + ".*", "i") },
+          })
+        )
+      );
+
+      for (const post of posts) {
+        await setOwner(post);
+      }
 
       res.json(posts);
     } catch (error) {

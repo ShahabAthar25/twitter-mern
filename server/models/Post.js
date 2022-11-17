@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const postSchema = mongoose.Schema({
-  ownerId: {
+  owner: {
     type: String,
     default: "",
   },
@@ -32,7 +32,7 @@ const postSchema = mongoose.Schema({
 });
 
 postSchema.pre("save", function (next, req) {
-  this.ownerId = req.payload.id;
+  this.owner = req.payload.id;
   next();
 });
 
