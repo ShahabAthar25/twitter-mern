@@ -8,7 +8,6 @@ const dotenv = require("dotenv");
 const AuthRoute = require("./routes/Auth.Route");
 const PostsRoute = require("./routes/Posts.Route");
 const UsersRoute = require("./routes/Users.Route");
-const { verifyAccessToken } = require("./helpers/JWTHelper");
 require("./helpers/MongoDB");
 require("./helpers/Redis");
 
@@ -35,6 +34,7 @@ app.use(async (err, req, res, next) => {
   if (err.name === "CastError") {
     err.status = 404;
     err.message = "Not Found";
+    console.log(err.message);
   } else if (!err.status) {
     err.status = 500;
     console.log(err);

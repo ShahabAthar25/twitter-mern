@@ -13,7 +13,21 @@ module.exports = {
   },
   searchUsers: async (req, res, next) => {
     try {
-      res.json("Hello World");
+      const { q } = req.query;
+
+      const users = JSON.parse(
+        JSON.stringify(
+          await User.find({
+            $or: [
+              { name: { $regex: new RegExp(q + ".*", "i") } },
+              { username: { $regex: new RegExp(q + ".*", "i") } },
+              { bio: { $regex: new RegExp(q + ".*", "i") } },
+            ],
+          }).select("name username coverPic")
+        )
+      );
+
+      res.json(users);
     } catch (error) {
       next(error);
     }
