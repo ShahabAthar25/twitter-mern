@@ -1,3 +1,7 @@
+const bcrypt = require("bcrypt");
+
+const { userUpdateSchema } = require("../helpers/ValidationSchema");
+const Post = require("../models/Post");
 const User = require("../models/User");
 
 module.exports = {
@@ -7,6 +11,24 @@ module.exports = {
       const user = await User.findById(id);
 
       res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
+  whoami: async (req, res, next) => {
+    try {
+      const user = await User.findById(req.payload.id);
+
+      res.json({
+        id: user._id,
+        name: user.name,
+        username: user.username,
+        profilePic: user.profilePic,
+        coverPic: user.coverPic,
+        bio: user.bio,
+        createdAt: user.createdAt,
+        password: user.password,
+      });
     } catch (error) {
       next(error);
     }
@@ -34,14 +56,41 @@ module.exports = {
   },
   updateUser: async (req, res, next) => {
     try {
-      res.json("Hello World");
+      const { id } = req.params;
+
+      const result = await userUpdateSchema.validateAsync(req.body);
+      if (!result) throw createError.BadRequest();
+
+      if (req.payload.id != id) throw createError.Forbidden();
+
+      if (result.password) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(result.password, salt);
+
+        result.password = hashedPassword;
+      }
+
+      await User.findByIdAndUpdate(id, {
+        $set: result,
+      });
+
+      res.json("User Updated");
     } catch (error) {
       next(error);
     }
   },
   deleteUser: async (req, res, next) => {
     try {
-      res.json("Hello World");
+      const { id } = req.params;
+      const user = await User.findById(id);
+      if (!user) throw createError.NotFound();
+
+      if (req.payload.id != user._id) throw createError.Forbidden();
+
+      await Post.find({ owner: req.payload.id }).deleteMany();
+      await User.findById(req.payload.id).deleteOne();
+
+      res.json("User deleted");
     } catch (error) {
       next(error);
     }

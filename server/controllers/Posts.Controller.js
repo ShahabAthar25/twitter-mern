@@ -86,7 +86,7 @@ module.exports = {
       const post = await Post.findById(id);
       if (!post) throw createError.NotFound();
 
-      // if (req.payload.id != post.ownerId) throw createError.Forbidden();
+      if (req.payload.id != post.ownerId) throw createError.Forbidden();
 
       await post.deleteOne();
 

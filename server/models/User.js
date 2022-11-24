@@ -51,6 +51,14 @@ const userSchema = mongoose.Schema({
     type: Array,
     default: [],
   },
+  following: {
+    type: Array,
+    default: [],
+  },
+  followers: {
+    type: Array,
+    default: [],
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

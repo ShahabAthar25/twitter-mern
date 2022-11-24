@@ -22,8 +22,22 @@ const postSchema = Joi.object({
   retweet: Joi.string(),
 });
 
+// Users
+
+const userUpdateSchema = Joi.object({
+  name: Joi.string().max(255),
+  username: Joi.string().max(255),
+  email: Joi.string().lowercase().max(255),
+  password: Joi.string().min(8),
+  recoveryEmail: Joi.string().max(255),
+  profilePic: Joi.string(),
+  coverPic: Joi.string(),
+  bio: Joi.string(),
+});
+
 module.exports = {
   userSchema,
   loginSchema,
   postSchema,
+  userUpdateSchema,
 };
