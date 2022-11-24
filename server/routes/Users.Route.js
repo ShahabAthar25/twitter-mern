@@ -9,6 +9,5 @@ router.get("/:id", controller.getUser);
 router.put("/:id", verifyAccessToken, controller.updateUser);
 router.delete("/:id", verifyAccessToken, controller.deleteUser);
 router.put("/:id/follow", verifyAccessToken, controller.followUser);
-router.put("/:id/unfollow", verifyAccessToken, controller.unFollowUser);
 
 module.exports = router;

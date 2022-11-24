@@ -1,3 +1,4 @@
+const createError = require("http-errors");
 const bcrypt = require("bcrypt");
 
 const { userUpdateSchema } = require("../helpers/ValidationSchema");
@@ -27,7 +28,6 @@ module.exports = {
         coverPic: user.coverPic,
         bio: user.bio,
         createdAt: user.createdAt,
-        password: user.password,
       });
     } catch (error) {
       next(error);
@@ -70,6 +70,22 @@ module.exports = {
         result.password = hashedPassword;
       }
 
+      if (req.body.email) {
+        const emailExists = await User.findOne({ email: result.email });
+        if (emailExists)
+          throw createError.Conflict(`Email ${result.email} already exists.`);
+      }
+
+      if (req.body.username) {
+        const usernameExists = await User.findOne({
+          username: result.username,
+        });
+        if (usernameExists)
+          throw createError.Conflict(
+            `Username ${result.username} already exists.`
+          );
+      }
+
       await User.findByIdAndUpdate(id, {
         $set: result,
       });
@@ -97,14 +113,33 @@ module.exports = {
   },
   followUser: async (req, res, next) => {
     try {
-      res.json("Hello World");
-    } catch (error) {
-      next(error);
-    }
-  },
-  unFollowUser: async (req, res, next) => {
-    try {
-      res.json("Hello World");
+      const { id } = req.params;
+      if (id == req.payload.id) throw createError.BadRequest();
+
+      const user = await User.findById(id);
+      if (!user) throw createError.NotFound();
+
+      if (!user.followers.includes(req.payload.id)) {
+        await user.updateOne({
+          $push: { followers: req.payload.id },
+        });
+
+        await User.findOneAndUpdate(req.payload.id, {
+          $push: { followings: req.payload.id },
+        });
+
+        res.json("The user has been followed");
+      } else {
+        await user.updateOne({
+          $pull: { followers: req.payload.id },
+        });
+
+        await User.findOneAndUpdate(req.payload.id, {
+          $pull: { followings: req.payload.id },
+        });
+
+        res.json("The user has been unfollowed");
+      }
     } catch (error) {
       next(error);
     }
