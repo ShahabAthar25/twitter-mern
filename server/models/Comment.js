@@ -1,21 +1,17 @@
 const mongoose = require("mongoose");
 
-const postSchema = mongoose.Schema({
+const commentSchema = mongoose.Schema({
   owner: {
+    type: String,
+    default: "",
+  },
+  postId: {
     type: String,
     default: "",
   },
   body: {
     type: String,
     default: "",
-  },
-  retweet: {
-    type: String,
-    default: "",
-  },
-  retweets: {
-    type: Number,
-    default: 0,
   },
   likes: {
     type: Array,
@@ -27,9 +23,9 @@ const postSchema = mongoose.Schema({
   },
 });
 
-postSchema.pre("save", function (next, req) {
+commentSchema.pre("save", function (next, req) {
   this.owner = req.payload.id;
   next();
 });
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model("Comment", commentSchema);

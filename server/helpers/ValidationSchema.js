@@ -35,9 +35,16 @@ const userUpdateSchema = Joi.object({
   bio: Joi.string(),
 });
 
+// Comment
+
+const commentSchema = Joi.object({
+  body: Joi.string().required(),
+});
+
 module.exports = {
   userSchema,
   loginSchema,
   postSchema,
   userUpdateSchema,
+  commentSchema,
 };
