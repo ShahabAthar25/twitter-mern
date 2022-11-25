@@ -37,6 +37,8 @@ app.use(async (err, req, res, next) => {
     err.status = 404;
     err.message = "Not Found";
     console.log(err.message);
+  } else if (err.name === "ValidationError") {
+    err.status = 422;
   } else if (!err.status) {
     err.status = 500;
     console.log(err);

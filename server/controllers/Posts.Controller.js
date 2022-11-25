@@ -2,15 +2,7 @@ const createError = require("http-errors");
 
 const Post = require("../models/Post");
 const { postSchema } = require("../helpers/ValidationSchema");
-const User = require("../models/User");
-
-const setOwner = async (post) => {
-  const user = await User.findById(post.owner);
-  post.owner = {};
-  post.owner.name = user.name;
-  post.owner.username = user.username;
-  post.owner.coverPic = user.coverPic;
-};
+const setOwner = require("../helpers/setOwner");
 
 module.exports = {
   getAllPosts: async (req, res, next) => {
