@@ -9,6 +9,7 @@ const AuthRoute = require("./routes/Auth.Route");
 const PostsRoute = require("./routes/Posts.Route");
 const CommentsRoute = require("./routes/Comments.Route");
 const UsersRoute = require("./routes/Users.Route");
+const BookmarksRoute = require("./routes/Bookmarks.Route");
 require("./helpers/MongoDB");
 require("./helpers/Redis");
 
@@ -25,8 +26,9 @@ app.use(cors());
 
 app.use("/auth", AuthRoute);
 app.use("/posts", PostsRoute);
-app.use("/users", UsersRoute);
 app.use("/comments", CommentsRoute);
+app.use("/users", UsersRoute);
+app.use("/bookmarks", BookmarksRoute);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());
