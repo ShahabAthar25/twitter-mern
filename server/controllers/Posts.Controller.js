@@ -4,6 +4,12 @@ const Post = require("../models/Post");
 const { postSchema } = require("../helpers/ValidationSchema");
 const setOwner = require("../helpers/setOwner");
 
+const letters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+
+function setCurrentChar(currentChar, string, i) {
+  currentChar = string[i];
+}
+
 module.exports = {
   getAllPosts: async (req, res, next) => {
     try {
@@ -38,6 +44,27 @@ module.exports = {
     try {
       const result = await postSchema.validateAsync(req.body);
       if (!result.body && !result.retweet) throw createError.BadRequest();
+
+      let i = 0;
+      console.log(result.body);
+      while (i < result.body.length) {
+        let currentChar = result.body[i] || null;
+        let hashtag = "";
+
+        if (currentChar == "#") {
+          i++;
+          currentChar = result.body[i] || null;
+          console.log(currentChar);
+          console.log(letters.includes(currentChar));
+          while (currentChar !== null && letters.includes(currentChar)) {
+            hashtag += currentChar;
+          }
+
+          console.log(hashtag);
+        }
+
+        i++;
+      }
 
       const newPost = new Post(result);
       const post = await newPost.save(req);
