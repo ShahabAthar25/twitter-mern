@@ -10,6 +10,7 @@ const PostsRoute = require("./routes/Posts.Route");
 const CommentsRoute = require("./routes/Comments.Route");
 const UsersRoute = require("./routes/Users.Route");
 const BookmarksRoute = require("./routes/Bookmarks.Route");
+const HashTagsRoute = require("./routes/HashTags.Route");
 require("./helpers/MongoDB");
 require("./helpers/Redis");
 
@@ -29,6 +30,7 @@ app.use("/posts", PostsRoute);
 app.use("/comments", CommentsRoute);
 app.use("/users", UsersRoute);
 app.use("/bookmarks", BookmarksRoute);
+app.use("/hashtags", BookmarksRoute);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());
