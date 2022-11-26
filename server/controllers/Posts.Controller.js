@@ -1,15 +1,10 @@
 const createError = require("http-errors");
 
 const Post = require("../models/Post");
+const HashTag = require("../models/HashTag");
 const { postSchema } = require("../helpers/ValidationSchema");
 const setOwner = require("../helpers/setOwner");
 const getHashTags = require("../helpers/getHashtag");
-
-const letters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
-
-function setCurrentChar(currentChar, string, i) {
-  currentChar = string[i];
-}
 
 module.exports = {
   getAllPosts: async (req, res, next) => {
@@ -47,6 +42,13 @@ module.exports = {
       if (!result.body && !result.retweet) throw createError.BadRequest();
 
       result.hashTags = getHashTags(result.body);
+      for (const hashTag of result.hashTags) {
+        const hashTagExists = await HashTag.exists({ name: hashTag });
+        if (!hashTagExists) {
+          const newHashTag = new HashTag({ name: hashTag });
+          await newHashTag.save();
+        }
+      }
 
       const newPost = new Post(result);
       const post = await newPost.save(req);
