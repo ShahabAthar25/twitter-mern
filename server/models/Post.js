@@ -21,6 +21,10 @@ const postSchema = mongoose.Schema({
     type: Array,
     default: [],
   },
+  hashTags: {
+    type: String,
+    default: "",
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
