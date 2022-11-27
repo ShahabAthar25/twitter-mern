@@ -30,7 +30,7 @@ app.use("/posts", PostsRoute);
 app.use("/comments", CommentsRoute);
 app.use("/users", UsersRoute);
 app.use("/bookmarks", BookmarksRoute);
-app.use("/hashtags", BookmarksRoute);
+app.use("/hashtags", HashTagsRoute);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());
