@@ -1,4 +1,5 @@
 const createError = require("http-errors");
+const nodemailer = require("nodemailer");
 
 const User = require("../models/User");
 const { userSchema, loginSchema } = require("../helpers/ValidationSchema");
@@ -8,6 +9,9 @@ const {
   verifyRefreshToken,
 } = require("../helpers/JWTHelper");
 const client = require("../helpers/Redis");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const register = async (req, res, next) => {
   try {
@@ -91,8 +95,12 @@ const logout = async (req, res, next) => {
   }
 };
 
-const forgotPwd = async (req, res) => {
-  res.json("Hello World");
+const forgotPwd = async (req, res, next) => {
+  try {
+    res.json("Hello World");
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

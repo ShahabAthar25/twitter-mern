@@ -103,6 +103,13 @@ module.exports = {
 
       if (req.payload.id != user._id) throw createError.Forbidden();
 
+      for (const user of user.followings) {
+        const followedUser = user.findById(user);
+        await followedUser.updateOne({
+          $pull: { followings: req.payload.id },
+        });
+      }
+
       await Post.find({ owner: req.payload.id }).deleteMany();
       await User.findById(req.payload.id).deleteOne();
 
