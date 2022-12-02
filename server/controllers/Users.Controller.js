@@ -103,8 +103,8 @@ module.exports = {
 
       if (req.payload.id != user._id) throw createError.Forbidden();
 
-      for (const user of user.followings) {
-        const followedUser = user.findById(user);
+      for (const userId of user.followings) {
+        const followedUser = await userId.findById(user);
         await followedUser.updateOne({
           $pull: { followings: req.payload.id },
         });
