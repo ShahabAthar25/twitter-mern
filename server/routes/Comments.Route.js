@@ -1,10 +1,9 @@
 const router = require("express").Router();
 
 const controller = require("../controllers/Comments.Controller");
-const { verifyAccessToken } = require("../helpers/JWTHelper");
 
 router.get("/:id", controller.getComments);
-router.post("/:id", verifyAccessToken, controller.createComment);
-router.delete("/:id", verifyAccessToken, controller.deleteComment);
+router.post("/:id", controller.createComment);
+router.delete("/:id", controller.deleteComment);
 
 module.exports = router;

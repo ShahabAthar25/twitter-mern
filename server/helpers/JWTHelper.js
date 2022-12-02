@@ -93,8 +93,6 @@ module.exports = {
             console.log(err.message);
             reject(createError.InternalServerError());
           });
-
-        resolve(userId);
       });
     });
   },

@@ -11,6 +11,7 @@ const CommentsRoute = require("./routes/Comments.Route");
 const UsersRoute = require("./routes/Users.Route");
 const BookmarksRoute = require("./routes/Bookmarks.Route");
 const HashTagsRoute = require("./routes/HashTags.Route");
+const { verifyAccessToken } = require("./helpers/JWTHelper");
 require("./helpers/MongoDB");
 require("./helpers/Redis");
 
@@ -26,6 +27,9 @@ app.use(helmet());
 app.use(cors());
 
 app.use("/auth", AuthRoute);
+
+app.use(verifyAccessToken);
+
 app.use("/posts", PostsRoute);
 app.use("/comments", CommentsRoute);
 app.use("/users", UsersRoute);
